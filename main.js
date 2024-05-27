@@ -10,6 +10,14 @@ const urlRegex = /^(https?:\/\/[^\/]+)\/?(.*)/;
 
 server.use(express.raw({type: "*/*", limit: "100mb"}));
 server.use(async (req, res, next) => {
+	res.set("access-control-allow-origin", "*");
+	res.set("access-control-allow-methods", "GET, PUT, PATCH, POST, DELETE");
+	res.set("access-control-allow-headers", req.get("access-control-request-headers"));
+	if (req.method == "OPTIONS") {
+		res.status(200).end();
+		return;
+	}
+
 	let url = req.url.slice(1);
 	if (!url.match(urlRegex)) {
 		if (!req.headers["referer"]) return next();
@@ -37,8 +45,6 @@ server.use(async (req, res, next) => {
 		validateStatus: () => true
 	});
 
-	proxyRes.headers["access-control-allow-origin"] = "*";
-
 	// To fix a glitch (I think) where nginx complains when both transfer-encoding and content-length are sent
 	delete proxyRes.headers["transfer-encoding"];
 
@@ -61,6 +67,6 @@ server.use((err, req, res, next) => {
 })
 
 
-server.listen(3000, "127.0.0.1", () => {
+server.listen(4000, "127.0.0.1", () => {
 	console.log("CORS proxy ready");
 });
