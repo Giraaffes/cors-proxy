@@ -26,7 +26,7 @@ server.use(async (req, res, next) => {
 
 	delete req.headers["host"];
 	delete req.headers["content-length"];
-	let res = await axios({
+	let proxyRes = await axios({
 		method: req.method,
 		url: url,
 		headers: req.headers,
@@ -37,15 +37,15 @@ server.use(async (req, res, next) => {
 		validateStatus: () => true
 	});
 
-	res.headers["access-control-allow-origin"] = "*";
+	proxyRes.headers["access-control-allow-origin"] = "*";
 
 	// To fix a glitch (I think) where nginx complains when both transfer-encoding and content-length are sent
-	delete res.headers["transfer-encoding"];
+	delete proxyRes.headers["transfer-encoding"];
 
-	res.statusMessage = res.statusText;
-	res.status(res.status);
-	res.set(res.headers);
-	res.send(res.data);
+	res.statusMessage = proxyRes.statusText;
+	res.status(proxyRes.status);
+	res.set(proxyRes.headers);
+	res.send(proxyRes.data);
 	res.end();
 });
 
