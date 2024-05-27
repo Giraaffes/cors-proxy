@@ -34,9 +34,7 @@ server.use(async (req, res, next) => {
 		responseType: "arraybuffer",
 		responseEncoding: "binary",
 		maxRedirects: 0,
-		validateStatus: () => true,
-
-		proxy: {protocol: "http", host: "127.0.0.1", port: 8888}
+		validateStatus: () => true
 	});
 	console.log(inspirRes);
 
