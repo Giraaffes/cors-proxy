@@ -18,14 +18,17 @@ server.use(async (req, res, next) => {
 		return;
 	}
 
+	console.log(req.url);
 	let url = (req.url.match(/(?<=^\/cors\/).+/) || [])[0];
 	if (!url) return next();
 
 	if (!url.match(urlRegex)) {
+		console.log(req.headers);
 		if (!req.headers["referer"]) return next();
 
 		let refererUrl = req.headers["referer"].match(urlRegex)[2];
 		let refererUrlMatch = refererUrl.match(urlRegex);
+		console.log(refererUrl, refererUrlMatch);
 		if (!refererUrlMatch) return next();
 
 		let refererBaseUrl = refererUrlMatch[1];
