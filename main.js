@@ -67,6 +67,6 @@ server.use((err, req, res, next) => {
 })
 
 
-server.listen(4000, "127.0.0.1", () => {
+server.listen(3000, "127.0.0.1", () => {
 	console.log("CORS proxy ready");
 });
