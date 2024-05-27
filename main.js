@@ -18,7 +18,9 @@ server.use(async (req, res, next) => {
 		return;
 	}
 
-	let url = req.url.slice(1);
+	let url = (req.url.match(/(?<=^\/cors\/).+/) || [])[0];
+	if (!url) return next();
+
 	if (!url.match(urlRegex)) {
 		if (!req.headers["referer"]) return next();
 
@@ -35,8 +37,8 @@ server.use(async (req, res, next) => {
 	delete req.headers["host"];
 	delete req.headers["content-length"];
 	let proxyRes = await axios({
+		url,
 		method: req.method,
-		url: url,
 		headers: req.headers,
 		data: req.body,
 		responseType: "arraybuffer",
@@ -67,6 +69,6 @@ server.use((err, req, res, next) => {
 })
 
 
-server.listen(3000, "127.0.0.1", () => {
+server.listen(4000, "127.0.0.1", () => {
 	console.log("CORS proxy ready");
 });
