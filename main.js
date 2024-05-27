@@ -36,7 +36,6 @@ server.use(async (req, res, next) => {
 		maxRedirects: 0,
 		validateStatus: () => true
 	});
-	console.log(inspirRes);
 
 	// To fix a glitch (I think) where nginx complains when both transfer-encoding and content-length are sent
 	delete inspirRes.headers["transfer-encoding"];
