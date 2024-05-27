@@ -26,7 +26,7 @@ server.use(async (req, res, next) => {
 
 	delete req.headers["host"];
 	delete req.headers["content-length"];
-	let inspirRes = await axios({
+	let res = await axios({
 		method: req.method,
 		url: url,
 		headers: req.headers,
@@ -37,13 +37,15 @@ server.use(async (req, res, next) => {
 		validateStatus: () => true
 	});
 
-	// To fix a glitch (I think) where nginx complains when both transfer-encoding and content-length are sent
-	delete inspirRes.headers["transfer-encoding"];
+	res.headers["access-control-allow-origin"] = "*";
 
-	res.statusMessage = inspirRes.statusText;
-	res.status(inspirRes.status);
-	res.set(inspirRes.headers);
-	res.send(inspirRes.data);
+	// To fix a glitch (I think) where nginx complains when both transfer-encoding and content-length are sent
+	delete res.headers["transfer-encoding"];
+
+	res.statusMessage = res.statusText;
+	res.status(res.status);
+	res.set(res.headers);
+	res.send(res.data);
 	res.end();
 });
 
