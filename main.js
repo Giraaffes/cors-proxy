@@ -18,27 +18,13 @@ server.use(async (req, res, next) => {
 		return;
 	}
 
-	let url = req.url.slice(1);
-	if (!url.match(urlRegex)) {
-		if (!req.headers["referer"]) return next();
-
-		let refererUrl = req.headers["referer"].match(urlRegex)[2];
-		let refererUrlMatch = refererUrl.match(urlRegex);
-		if (!refererUrlMatch) return next();
-
-		let refererBaseUrl = refererUrlMatch[1];
-		url = `${refererBaseUrl}/${url}`;
-	}
-
-	if (Object.keys(req.body).length == 0) req.body = null;
-
 	delete req.headers["host"];
 	delete req.headers["content-length"];
 	let proxyRes = await axios({
-		url,
+		url: req.query["url"],
 		method: req.method,
 		headers: req.headers,
-		data: req.body,
+		data: Object.keys(req.body).length > 0 && req.body,
 		responseType: "arraybuffer",
 		responseEncoding: "binary",
 		maxRedirects: 0,
