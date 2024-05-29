@@ -6,9 +6,6 @@ const axios = require("axios");
 const server = express();
 
 
-const urlRegex = /^(https?:\/\/[^\/]+)\/?(.*)/;
-
-server.use(express.raw({type: "*/*", limit: "100mb"}));
 server.use(async (req, res, next) => {
 	res.set("access-control-allow-origin", "*");
 	res.set("access-control-allow-methods", "GET, PUT, PATCH, POST, DELETE");
@@ -24,7 +21,7 @@ server.use(async (req, res, next) => {
 		url: req.query["url"],
 		method: req.method,
 		headers: req.headers,
-		data: Object.keys(req.body).length > 0 && req.body,
+		data: req,
 		responseType: "arraybuffer",
 		responseEncoding: "binary",
 		maxRedirects: 0,
